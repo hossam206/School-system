@@ -120,3 +120,8 @@ All TypeScript models & interfaces.
 ---
 
 If you'd like a **more advanced README** (installation, scripts, environment variables, badges, screensh
+
+
+---Note on Project Flexibility
+
+This architecture is not final. Folder structure, naming conventions, and implementations may evolve as the project grows, UI/UX requirements update, or backend specifications change. All modules are designed to stay flexible and can be refactored or extended anytime based on project needs.
