@@ -1,8 +1,7 @@
 import React, { ReactNode, forwardRef } from "react";
 import { getButtonStyles, variantStyles } from "./classNames";
-import { ImSpinner8 } from "react-icons/im";
-import { IoCheckmark } from "react-icons/io5";
-import { MdOutlineSmsFailed } from "react-icons/md";
+
+import { Loader, Check, AlertCircle } from "lucide-react";
 
 type ButtonProps = {
   children?: ReactNode;
@@ -43,21 +42,21 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         case "loading":
           return (
             <span className="flex items-center gap-2">
-              <ImSpinner8 size={18} className="animate-spin" />
+              <Loader size={18} className="animate-spin" />
               Loading...
             </span>
           );
         case "success":
           return (
             <span className="flex items-center gap-1">
-              <IoCheckmark size={18} />
+              <Check size={18} />
               Success
             </span>
           );
         case "error":
           return (
             <span className="flex items-center gap-2">
-              <MdOutlineSmsFailed size={18} />
+              <AlertCircle size={18} />
               Failed
             </span>
           );

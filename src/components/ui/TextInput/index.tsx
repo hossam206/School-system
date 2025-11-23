@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { getAditionalStyles, TextInputStyles } from "./classNames";
-import { IoEyeOff, IoEye } from "react-icons/io5";
+import { Eye, EyeOff } from "lucide-react"; // ← REPLACED HERE
 import { HandleError } from "@/src/Utils/HandleError";
 
 type TextInputProps = {
@@ -67,7 +67,7 @@ const TextInput = ({
       );
     }
 
-     return <span className="flex items-center">{addon}</span>;
+    return <span className="flex items-center">{addon}</span>;
   };
 
   return (
@@ -111,7 +111,7 @@ const TextInput = ({
             className={TextInputStyles.showPassword}
             onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <IoEye /> : <IoEyeOff />}
+            {showPassword ? <Eye /> : <EyeOff />}
           </span>
         ) : (
           renderIcon(suffix)

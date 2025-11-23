@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
-import { FaTimesCircle } from "react-icons/fa";
-import { FiCheckCircle } from "react-icons/fi";
+import { CheckCircle, XCircle } from "lucide-react"; 
 import { toasterStyles } from "./classNames";
 
 type ToasterProps = React.ComponentProps<typeof Sonner> & {
@@ -16,11 +15,9 @@ type ToasterProps = React.ComponentProps<typeof Sonner> & {
 const Toaster = ({ status, description, ...props }: ToasterProps) => {
   const { theme } = useTheme();
 
-  // Ensure `theme` is a string before using `.includes()`
-  const validTheme = (["system", "dark", "light"].includes(theme || "") ? theme : "system") as
-    | "system"
-    | "dark"
-    | "light";
+  const validTheme = (
+    ["system", "dark", "light"].includes(theme || "") ? theme : "system"
+  ) as "system" | "dark" | "light";
 
   useEffect(() => {
     if (!status || !description?.trim()) return;
@@ -28,9 +25,9 @@ const Toaster = ({ status, description, ...props }: ToasterProps) => {
     const toastOptions = {
       icon:
         status === "success" ? (
-          <FiCheckCircle size={24} className="text-green-40" />
+          <CheckCircle size={24} className="text-green-40" />
         ) : (
-          <FaTimesCircle size={24} className="text-red-700" />
+          <XCircle size={24} className="text-red-700" />
         ),
     };
 
@@ -48,7 +45,8 @@ const Toaster = ({ status, description, ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast: toasterStyles.toastContainerStyles,
-          description: "group-[.toaster]:text-muted-foreground text-sm capitalize",
+          description:
+            "group-[.toaster]:text-muted-foreground text-sm capitalize",
           success: "!bg-green-10 !border-green-60 !text-green-80",
           error: "!bg-red-100 !border-red-300 !text-red-800",
         },

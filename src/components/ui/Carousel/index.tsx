@@ -13,7 +13,7 @@ import {
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
-import { SlArrowRight, SlArrowLeft } from "react-icons/sl";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import Button from "../Button";
 
@@ -195,8 +195,9 @@ const CarouselPrevious = forwardRef<
       )}
       //disabled={!canScrollPrev}
       onClick={scrollPrev}
-      {...props}>
-      <SlArrowLeft className="h-4 w-4" />
+      {...props}
+    >
+      <ChevronLeft className="h-4 w-4" />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -221,8 +222,9 @@ const CarouselNext = forwardRef<
       )}
       //disabled={!canScrollNext}
       onClick={scrollNext}
-      {...props}>
-      <SlArrowRight className="h-4 w-4" />
+      {...props}
+    >
+      <ChevronRight className="h-4 w-4" />
       <span className="sr-only">Next slide</span>
     </Button>
   );
