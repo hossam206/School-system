@@ -1,4 +1,3 @@
-import Paragraph from "@/src/components/ui/Paragraph";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export default async function Home({
@@ -13,7 +12,7 @@ export default async function Home({
   const t = await getTranslations();
   return (
     <div className="container">
-      <p>{locale}</p>
+      {/* <p>{locale}</p> */}
       <h1 className="text-black">{t("hello")}</h1>
     </div>
   );
