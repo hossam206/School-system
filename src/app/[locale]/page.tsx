@@ -1,12 +1,11 @@
-import Image from "next/image";
-import Button from "../../components/ui/Button";
-import TextInput from "../../components/ui/TextInput";
+
+import { useTranslations } from "next-intl";
  
 export default function Home() {
+  const t = useTranslations();
   return (
-    <div className="">
-      <h1>Home</h1>
-    
+    <div className="container">
+      <h1>{t("hello")}</h1>
     </div>
   );
 }
