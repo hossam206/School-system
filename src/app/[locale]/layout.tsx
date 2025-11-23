@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "MLS Platform",
@@ -22,6 +23,7 @@ export default async function RootLayout({
   params,
 }: Readonly<RootLayoutProps>) {
     const { locale } = await params;
+    setRequestLocale(locale);
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>

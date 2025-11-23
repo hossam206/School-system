@@ -1,11 +1,18 @@
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { useTranslations } from "next-intl";
- 
-export default function Home() {
-  const t = useTranslations();
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  // Enable static rendering
+  setRequestLocale(locale);
+
+  const t = await getTranslations();
   return (
     <div className="container"> 
-      <h1 className="bg-primary text-white">{t("hello")}</h1>
+      <h1 className="text-black">{t("hello")}</h1>
     </div>
   );
 }
