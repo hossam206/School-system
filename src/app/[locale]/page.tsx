@@ -1,3 +1,4 @@
+import { GET_PROJECTS } from "@/src/apis";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export default async function Home({
@@ -10,9 +11,12 @@ export default async function Home({
   setRequestLocale(locale);
 
   const t = await getTranslations();
+
+  const projects = await GET_PROJECTS();
+
+  console.log(projects, "sasa");
   return (
     <div className="container">
-      {/* <p>{locale}</p> */}
       <h1 className="text-black">{t("hello")}</h1>
     </div>
   );
