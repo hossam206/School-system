@@ -24,7 +24,7 @@ export default function AboutPage() {
   console.log(error, "asdsad");
   console.log(loading, "dsdadasdsad");
 
-  if (loading) return <p>Loading projects...</p>;
+  // if (loading) return <p>Loading projects...</p>;
 
   return (
     <div className="container">

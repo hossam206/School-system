@@ -17,20 +17,20 @@ export default async function Home({
 
   console.log(projects, "sasa");
   const users = [
-  { id: "1", name: "John Doe", avatar: "https://github.com/shadcn.png" },
-  { id: "2", name: "Jane Smith" },
-];
+    { id: "1", name: "John Doe", avatar: "https://github.com/shadcn.png" },
+    { id: "2", name: "Jane Smith" },
+  ];
   return (
     <div className="container">
       <h1 className="text-black">{t("hello")}</h1>
-      <GenericSelect
-      items={users}
-      valueKey="id"       // Returns the 'id' property
-      labelKey="name"     // Displays the 'name' property
-      imageKey="avatar"   // Shows image if property exists
-      onSelect={(id) => console.log("Selected ID:", id)}
-      placeholder="Select User"
-    />
+      {/* <GenericSelect
+        items={users}
+        valueKey="id" // Returns the 'id' property
+        labelKey="name" // Displays the 'name' property
+        imageKey="avatar" // Shows image if property exists
+        onSelect={(id) => console.log("Selected ID:", id)}
+        placeholder="Select User"
+      /> */}
     </div>
   );
 }
