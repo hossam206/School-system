@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { getAditionalStyles, TextInputStyles } from "./classNames";
 import { Eye, EyeOff } from "lucide-react"; // ← REPLACED HERE
-import { HandleError } from "@/src/Utils/HandleError";
+import { HandleError } from "@/src/utils/handleError";
 
 type TextInputProps = {
   label?: string;
