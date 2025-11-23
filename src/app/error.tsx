@@ -1,5 +1,5 @@
 "use client";
-import ErrorIcon from "@/assets/error-icon.png";
+// import ErrorIcon from "@/assets/error-icon.png";
 import Image from "next/image";
 import Link from "next/link";
 // import MyLink from "@/components/shared/myLink";
@@ -10,7 +10,7 @@ export default function Error() {
   return (
     <div className="main-container flex flex-col items-center justify-center h-[80vh]!">
       {/* image */}
-      <Image src={ErrorIcon} alt="error" width={520} height={180} />
+      {/* <Image src={ErrorIcon} alt="error" width={520} height={180} /> */}
 
       <h1 className="text-2xl font-bold mt-2">
         {" "}
