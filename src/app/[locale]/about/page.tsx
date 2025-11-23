@@ -16,6 +16,10 @@ export default function AboutPage() {
     onError: (err) => console.log("Error:", err),
   });
 
+  useEffect(() => {
+    console.log(projects);
+  }, [projects]);
+
   console.log(projects, "aaaaaa");
   console.log(error, "asdsad");
   console.log(loading, "dsdadasdsad");
@@ -25,6 +29,7 @@ export default function AboutPage() {
   return (
     <div className="container">
       <h1>About Page</h1>
+      <h1>{projects?.message}</h1>
     </div>
   );
 }
