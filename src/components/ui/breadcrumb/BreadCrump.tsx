@@ -6,7 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from ".";
-import { RenderWithSkeleton } from "../../RenderWithSkeleton";
+import { RenderWithSkeleton } from "../../renderWirthSkeleton";
 
 type BreadcrumbItemType = {
   id: string;
