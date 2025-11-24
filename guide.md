@@ -42,7 +42,8 @@
      .required("password is required")
      .min(10, "Password must be at least 10 characters"),
  });
-const formik = useFormik({
+
+    const formik = useFormik({
     initialValues: {
     name: "",
     email: "",
