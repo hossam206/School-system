@@ -2,7 +2,7 @@ import clx from "clsx";
 
 // Base button styles
 export const baseButtonStyles = clx(
-  " flex flex-row items-center justify-center gap-1 text-sm px-2 py-2 rounded-[30px] font-medium transition-all duration-300 ease-in-out hover:opacity-80 tracking-wide disabled:cursor-not-allowed disabled:opacity-50 outline-none"
+  "flex flex-row items-center justify-center gap-1 text-sm px-2 py-2 rounded-[30px] font-medium transition-all duration-300 ease-in-out hover:opacity-80 active:scale-95 tracking-wide disabled:cursor-not-allowed disabled:opacity-50 outline-none cursor-pointer bg-primary"
 );
 
 // Variant styles

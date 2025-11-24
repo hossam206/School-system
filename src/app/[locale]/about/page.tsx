@@ -1,6 +1,7 @@
 "use client";
 
 import { GET_PROJECTS } from "@/src/apis";
+import Button from "@/src/components/ui/Button";
 import { Select } from "@/src/components/ui/select";
 import { useFetch } from "@/src/hooks/useFetch";
 import { useEffect } from "react";
@@ -17,8 +18,7 @@ export default function AboutPage() {
     onError: (err) => console.log("Error:", err),
   });
 
- 
-   const users = [
+  const users = [
     {
       id: "1",
       name: "John Doe",
@@ -42,6 +42,8 @@ export default function AboutPage() {
         displayImg="avatar"
         placeholder="Select User"
       />
+
+      <Button onClick={() => refetch()} className="mt-5">Refetch</Button>
     </div>
   );
 }

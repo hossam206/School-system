@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@/src/app/global.css";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { createMetadata } from "@/src/utils/generateMetadata";
