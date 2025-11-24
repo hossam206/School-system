@@ -1,13 +1,18 @@
-"use server";
+// "use server";
 
 import { apiFetch } from "@/src/services/apiInstance";
+import { generalStore } from "@/src/store/generalStore";
+import { handleResponse } from "./services/handleResponse";
 
 export async function GET_PROJECTS() {
-  return apiFetch("/projects", {
+  generalStore.getState().updateGeneral({ loadingKey: "projects" });
+  const response = await apiFetch("/projects", {
     method: "GET",
     next: {
       tags: ["projects"],
       revalidate: 60,
     },
   });
+
+  return handleResponse({ response });
 }

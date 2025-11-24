@@ -29,13 +29,13 @@ export const variantStyles = {
 export const getButtonStyles = (
   className?: string,
   variant?: keyof typeof variantStyles,
-  submitStatus?: keyof typeof variantStyles,
+  isLoading?: boolean,
   disabled?: boolean
 ) => {
   return clx(
     baseButtonStyles,
     variant && variantStyles[variant],
-    submitStatus && variantStyles[submitStatus],
+    isLoading && variantStyles.loading,
     className,
     disabled
   );

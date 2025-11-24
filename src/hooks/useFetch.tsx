@@ -27,7 +27,6 @@ export function useFetch<T>({
     setError(null);
     try {
       const result = await serverAction();
-      console.log(result,'dsdsdsd');
       setData(result);
       onFetch?.(result);
       return result;

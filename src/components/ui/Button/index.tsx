@@ -1,14 +1,16 @@
 import React, { ReactNode, forwardRef, ButtonHTMLAttributes } from "react";
 import { getButtonStyles, variantStyles } from "./classNames";
 
-import { Loader, Check, AlertCircle } from "lucide-react";
+import { Loader } from "lucide-react";
+import { generalStore } from "@/src/store/generalStore";
 
 interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "prefix"> {
   variant?: keyof typeof variantStyles;
-  submitStatus?: "loading" | "success" | "error" | "idle";
+  loading?: boolean;
   prefix?: ReactNode;
   suffix?: ReactNode;
+  loadingKey?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -19,44 +21,39 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       type = "button",
       disabled = false,
       variant,
-      submitStatus = "idle",
+      loading = false,
       prefix,
       suffix,
+      loadingKey,
       ...props
     },
     ref
   ) => {
-    const combinedStyles = getButtonStyles(className, variant, submitStatus);
+    // get the loading key from the global store
+    const globalLoadingKey = generalStore((state) => state.general?.loadingKey);
+    // check if the loading key is the same as the button's loading key
+    const isGlobalLoading = !!loadingKey && globalLoadingKey === loadingKey;
+    // combine local and global loading state
+    const isLoading = loading || isGlobalLoading;
 
-    const renderStatus = () => {
-      switch (submitStatus) {
-        case "loading":
-          return (
-            <span className="flex items-center gap-2">
-              <Loader size={18} className="animate-spin" />
-              Loading...
-            </span>
-          );
-        case "success":
-          return (
-            <span className="flex items-center gap-1">
-              <Check size={18} />
-              Success
-            </span>
-          );
-        case "error":
-          return (
-            <span className="flex items-center gap-2">
-              <AlertCircle size={18} />
-              Failed
-            </span>
-          );
-        default:
-          return null;
-      }
-    };
+    console.log(loadingKey, "loadingKey");
+    console.log(globalLoadingKey, "globalLoadingKey");
 
-    const renderIdleContent = () => (
+    const combinedStyles = getButtonStyles(
+      className,
+      variant,
+      isLoading,
+      disabled
+    );
+
+    const renderLoading = () => (
+      <span className="flex items-center gap-2">
+        <Loader size={18} className="animate-spin" />
+        Loading...
+      </span>
+    );
+
+    const renderContent = () => (
       <span className="flex items-center gap-2">
         {prefix}
         {children}
@@ -68,12 +65,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         type={type}
         className={combinedStyles}
-        disabled={disabled || submitStatus === "loading"}
-        aria-disabled={disabled || submitStatus === "loading"}
+        disabled={disabled || isLoading}
+        aria-disabled={disabled || isLoading}
         ref={ref}
         {...props}
       >
-        {submitStatus !== "idle" ? renderStatus() : renderIdleContent()}
+        {isLoading ? renderLoading() : renderContent()}
       </button>
     );
   }
