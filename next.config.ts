@@ -8,11 +8,13 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-experimental: {
-  serverActions: {
-    bodySizeLimit: "100mb",
-  }
-},
+  experimental: {
+    cacheComponents: true,
+    proxyClientMaxBodySize: 5 * 1024 * 1024, // adjust as needed
+    serverActions: {
+      bodySizeLimit: "100mb",
+    },
+  },
   output: "standalone",
   httpAgentOptions: {
     keepAlive: true,
