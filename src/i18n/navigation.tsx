@@ -4,11 +4,17 @@ import { ComponentProps } from "react";
 
 // Lightweight wrappers around Next.js' navigation
 // APIs that consider the routing configuration
-const { Link: NextIntlLink, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);
+const {
+  Link: NextIntlLink,
+  redirect,
+  usePathname,
+  useRouter,
+  getPathname,
+} = createNavigation(routing);
 
 // Wrapper to disable prefetch by default for better performance during high load
 export const Link = (props: ComponentProps<typeof NextIntlLink>) => {
-  return <NextIntlLink prefetch={false} {...props} />;
+  return <NextIntlLink {...props} />;
 };
 
 export { redirect, usePathname, useRouter, getPathname };

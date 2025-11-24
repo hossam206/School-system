@@ -5,7 +5,6 @@ import {
   setLangCookie,
 } from "./lib/middlewareFunctions";
 import { NextRequest } from "next/server";
-import createIntlMiddleware from "next-intl/middleware";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -14,7 +13,7 @@ export default function middleware(request: NextRequest) {
   const locale = request.nextUrl.pathname.split("/")[1];
 
   // 1️⃣ Handle redirect if URL missing locale
-  const redirect = redirectToDefaultLocale(request);
+  const redirect = redirectToDefaultLocale(request, routing.defaultLocale);
   if (redirect) return redirect;
 
   // 2️⃣ Normal Next-Intl middleware
@@ -27,5 +26,5 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/(ar|en)/:path*"],
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

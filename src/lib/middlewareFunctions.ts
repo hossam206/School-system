@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const VALID_LOCALES = ["en", "ar"];
 
 export function setLangCookie(response: NextResponse, locale: string) {
-  if (locale !== "en" && locale !== "ar") return response;
+  if (!VALID_LOCALES.includes(locale)) return response;
 
   response.cookies.set("lang", locale, {
     path: "/",
@@ -22,11 +22,12 @@ export function redirectToDefaultLocale(request: any, defaultLocale = "ar") {
   // If root or missing locale, redirect
   if (
     pathname === "/" ||
-    (!pathname.startsWith("/en") && !pathname.startsWith("/ar"))
+    !VALID_LOCALES.some((locale) => pathname.startsWith(`/${locale}`))
   ) {
     const url = new URL(request.url);
-    url.pathname = `/ar${pathname === "/" ? "" : pathname}`;
-    const response = NextResponse.redirect(url);
+    url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
+    let response = NextResponse.redirect(url);
+    response = setLangCookie(response, defaultLocale);
 
     return response;
   }

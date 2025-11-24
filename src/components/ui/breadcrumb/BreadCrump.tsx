@@ -6,7 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from ".";
-import { RenderWithSkeleton } from "../../renderWirthSkeleton";
+import { RenderWithSkeleton } from "../../helpers/renderWirthSkeleton";
 
 type BreadcrumbItemType = {
   id: string;
@@ -31,7 +31,8 @@ const BreadCrump = ({ List }: BreadCrumpProps) => {
                     {item.Link ? (
                       <BreadcrumbLink
                         href={item.Link}
-                        className="text-gray-60 font-medium">
+                        className="text-gray-60 font-medium"
+                      >
                         {item.label}
                       </BreadcrumbLink>
                     ) : (

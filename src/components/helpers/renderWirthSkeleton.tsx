@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 type RenderWithSkeletonProps = {
   value: unknown;

@@ -1,7 +1,6 @@
-
 import { GET_PROJECTS } from "@/src/apis";
-   import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
+import MyLink from "@/src/components/helpers/myLink";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export default async function Home({
   params,
@@ -20,7 +19,7 @@ export default async function Home({
   return (
     <div className="container">
       <h1 className="text-black">{t("hello")}</h1>
-      <Link href={"/en/test"}>to about</Link>
+      <MyLink href={"/test"}>to about</MyLink>
       {/* <GenericSelect
         items={users}
         valueKey="id" // Returns the 'id' property
