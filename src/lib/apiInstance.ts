@@ -2,11 +2,9 @@
 
 import { cookies } from "next/headers";
 
-// ----------------------
-// Helper to normalize headers
-// ----------------------
-function normalizeHeaders(h?: HeadersInit): Record<string, string> {
-  if (!h) return {};
+ // Helper to normalize headers
+ function normalizeHeaders(h?: HeadersInit): Record<string, string> {
+  if (!h) return {};  
 
   // Check for Headers by presence of .entries() method
   if (h && typeof (h as any).entries === "function") {
@@ -20,10 +18,8 @@ function normalizeHeaders(h?: HeadersInit): Record<string, string> {
   return h as Record<string, string>;
 }
 
-// ----------------------
-// Helper to detect plain objects for automatic JSON stringify
-// ----------------------
-function isPlainObject(obj: any): boolean {
+ // Helper to detect plain objects for automatic JSON stringify
+ function isPlainObject(obj: any): boolean {
   return (
     typeof obj === "object" &&
     obj !== null &&
@@ -32,16 +28,14 @@ function isPlainObject(obj: any): boolean {
   );
 }
 
-// ----------------------
-// Server-side fetch wrapper
-// ----------------------
-export async function apiFetch(
+ // Server-side fetch wrapper
+ export async function apiFetch(
   url: string,
   options: RequestInit & { includeAuth?: boolean } = {}
 ) {
   const baseURL = process.env.NEXT_PUBLIC_BASE_URL!;
   const fullUrl = baseURL + url;
-
+   console.log('full url is',fullUrl)
   const includeAuth = options.includeAuth !== false;
 
   let headers: Record<string, string> = {
@@ -82,8 +76,7 @@ export async function apiFetch(
 
     return await handleResponse(res);
   } catch (err: any) {
-    // Retry on SSL/TLS errors (once)
-    if (
+     if (
       err?.code === "ECONNRESET" ||
       err?.message?.includes("SSL") ||
       err?.message?.includes("TLS")
@@ -99,9 +92,7 @@ export async function apiFetch(
   }
 }
 
-// ----------------------
 // Response handler
-// ----------------------
 async function handleResponse(res: Response) {
   const contentType = res.headers.get("content-type");
 
