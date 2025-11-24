@@ -4,6 +4,7 @@ import { GET_PROJECTS } from "@/src/apis";
 import Button from "@/src/components/ui/Button";
 import { Select } from "@/src/components/ui/select";
 import { useFetch } from "@/src/hooks/useFetch";
+import { userStore } from "@/src/store/userStore";
 import { useEffect } from "react";
 
 export default function AboutPage() {
@@ -30,10 +31,20 @@ export default function AboutPage() {
   function onSelect(id: string) {
     console.log("Selected ID:", id);
   }
+  const setuser = userStore((state) => state.setUser);
+  const clearUser = userStore((state) => state.clearUser);
+  const updateuser = userStore((state) => state.updateUser);
+  const userInfo = userStore((state) => state.user);
+
   return (
     <div className="container">
       <h1>About Page</h1>
       <h1>{projects?.message}</h1>
+      <button onClick={() => setuser(users[0])}>Set User</button>
+      <button onClick={() => clearUser()}>Clear User</button>
+      <button onClick={() => updateuser({ email: "hossam" })}>
+        Update User
+      </button>
       <Select
         items={users}
         // valueKey="id" // Returns the 'id' property

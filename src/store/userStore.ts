@@ -27,7 +27,7 @@ export const userStore = create<UserState>()(
       clearUser: () => set({ user: null }),
     }),
     {
-      name: "user-store", // this will store in localStorage with this name
+      name: "user", // this will store in localStorage with this name
     }
   )
 );
