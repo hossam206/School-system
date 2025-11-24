@@ -1,6 +1,6 @@
 "use server";
 
-import { apiFetch } from "@/src/lib/apiInstance";
+import { apiFetch } from "@/src/services/apiInstance";
 
 export async function GET_PROJECTS() {
   return apiFetch("/projects", {
