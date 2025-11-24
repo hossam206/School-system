@@ -16,8 +16,7 @@ export async function genMetadata({
   ...props
 }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
-
-  const title = t(name);
+  const title = t(name);      
   const desc = t(description);
 
   return {
@@ -40,19 +39,3 @@ export async function genMetadata({
     ...props,
   };
 }
-
-
-
-// usage
-// export async function generateMetadata({ params }: Props) {
-//   const { locale } = await params;
-//   return genMetadata({
-//     name: "testTitle",
-//     description: "testDescription",
-//       locale,
-//     images: ["https://example.com/image.jpg" , "https://example.com/image2.jpg"],
-//     keywords: ["test", "metadata"],
-    
-    
-//   });
-// }

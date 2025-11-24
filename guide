@@ -1,0 +1,24 @@
+// -------------zustand------------
+// const user = userStore((state) => state.user);
+// const setUser = userStore((state) => state.setUser);
+// const updateUser = userStore((state) => state.updateUser);
+// const clearUser = userStore((state) => state.clearUser);
+
+// add to the store 
+// <button onClick={() => setUser(users[0])}>Set User</button>
+// remove from the store 
+// <button onClick={() => clearUser()}>Clear User</button>
+// show the user 
+// <p>{user?.email}</p>
+
+
+// -----------------select------------- 
+// <GenericSelect
+// items={users}
+// valueKey="id" // Returns the 'id' property
+// labelKey="name" // Displays the 'name' property
+// imageKey="avatar" // Shows image if property exists
+// onSelect={(id) => console.log("Selected ID:", id)}
+// placeholder="Select User"
+// /> 
+
