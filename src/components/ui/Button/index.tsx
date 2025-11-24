@@ -1,37 +1,28 @@
-import React, { ReactNode, forwardRef } from "react";
+import React, { ReactNode, forwardRef, ButtonHTMLAttributes } from "react";
 import { getButtonStyles, variantStyles } from "./classNames";
 
 import { Loader, Check, AlertCircle } from "lucide-react";
 
-type ButtonProps = {
-  children?: ReactNode;
-  onClick?: () => void;
-  className?: string;
-  type?: "button" | "submit" | "reset";
+interface ButtonProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "prefix"> {
   variant?: keyof typeof variantStyles;
-  disabled?: boolean;
   submitStatus?: "loading" | "success" | "error" | "idle";
-  ariaLabel?: string;
-  name?: string;
-  size?: string;
   prefix?: ReactNode;
   suffix?: ReactNode;
-};
+}
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
-      onClick,
-      name = "",
       className = "",
       type = "button",
       disabled = false,
       variant,
       submitStatus = "idle",
-      ariaLabel,
       prefix,
       suffix,
+      ...props
     },
     ref
   ) => {
@@ -76,13 +67,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         type={type}
-        name={name}
         className={combinedStyles}
-        onClick={onClick}
         disabled={disabled || submitStatus === "loading"}
         aria-disabled={disabled || submitStatus === "loading"}
-        aria-label={ariaLabel}
         ref={ref}
+        {...props}
       >
         {submitStatus !== "idle" ? renderStatus() : renderIdleContent()}
       </button>
