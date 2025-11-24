@@ -7,6 +7,7 @@ export async function GET_PROJECTS() {
     method: "GET",
     next: {
       tags: ["projects"],
+      revalidate: 60,
     },
   });
 }
