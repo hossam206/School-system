@@ -1,7 +1,6 @@
 
 import { GET_PROJECTS } from "@/src/apis";
-import { GenericSelect } from "@/src/components/ui/select";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+   import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 
 export default async function Home({
@@ -14,14 +13,9 @@ export default async function Home({
   setRequestLocale(locale);
 
   const t = await getTranslations();
-
   const projects = await GET_PROJECTS();
 
   console.log(projects, "sasa");
-  const users = [
-    { id: "1", name: "John Doe", avatar: "https://github.com/shadcn.png",email: "john.doe@example.com" },
-    { id: "2", name: "Jane Smith", email: "jane.smith@example.com" },
-  ];
 
   return (
     <div className="container">
