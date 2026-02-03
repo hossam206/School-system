@@ -1,5 +1,3 @@
-// "use server";
-
 import { apiFetch } from "@/src/services/apiInstance";
 import { generalStore } from "@/src/store/generalStore";
 import { handleResponse } from "./services/handleResponse";
