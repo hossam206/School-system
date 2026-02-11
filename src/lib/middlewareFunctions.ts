@@ -13,9 +13,6 @@ export function setLangCookie(response: NextResponse, locale: string) {
   return response;
 }
 
-/**
- * Redirects paths missing a locale to the default locale.
- */
 export function redirectToDefaultLocale(request: any, defaultLocale = "ar") {
   const pathname = request.nextUrl.pathname;
 

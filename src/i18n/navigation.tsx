@@ -2,8 +2,6 @@ import { createNavigation } from "next-intl/navigation";
 import { routing } from "./routing";
 import { ComponentProps } from "react";
 
-// Lightweight wrappers around Next.js' navigation
-// APIs that consider the routing configuration
 const {
   Link: NextIntlLink,
   redirect,

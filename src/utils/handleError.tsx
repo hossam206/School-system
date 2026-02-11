@@ -4,7 +4,7 @@ type errorProps = {
 };
 export const HandleError = ({ error }: errorProps) => {
   const formattedError = useMemo(() => {
-    if (!error) return "Unknown error occurred"; // If error is undefined
+    if (!error) return "Unknown error occurred";
 
     if (typeof error === "string") {
       return error;
@@ -28,7 +28,7 @@ export const HandleError = ({ error }: errorProps) => {
     }
 
     return "An unexpected error occurred.";
-  }, [error]); // Only recompute when `error` changes
+  }, [error]);
 
   return (
     <div>

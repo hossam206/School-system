@@ -43,7 +43,7 @@
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState(defaultValue);
 
-    const selectedItem = items.find((item) => item[valueKey] === value);
+    const selectedItem = items?.find((item) => item[valueKey] === value);
 
     return (
       <Popover open={open} onOpenChange={setOpen}>

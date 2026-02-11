@@ -1,5 +1,5 @@
-import { GET_PROJECTS } from "@/src/apis";
 import MyLink from "@/src/components/helpers/myLink";
+import { Table } from "@/src/components/ui/Table";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export default async function Home({
@@ -10,24 +10,23 @@ export default async function Home({
   const { locale } = await params;
   // Enable static rendering
   setRequestLocale(locale);
-
   const t = await getTranslations();
-  // const projects = await GET_PROJECTS();
+  // get test data
 
-  // console.log(projects, "sasa");
-
+  const users = [
+    { id: 1, name: "Project 1" },
+    { id: 2, name: "Project 2" },
+    { id: 3, name: "Project 3" },
+  ];
   return (
     <div className="container">
       <h1 className="text-black">{t("hello")}</h1>
       <MyLink href={"/test"}>to about</MyLink>
-      {/* <GenericSelect
-        items={users}
-        valueKey="id" // Returns the 'id' property
-        labelKey="name" // Displays the 'name' property
-        imageKey="avatar" // Shows image if property exists
-        onSelect={(id) => console.log("Selected ID:", id)}
-        placeholder="Select User"
-      /> */}
+      <div className="max-w-[400px] mx-auto">
+        <Table  
+        // tableHeaders={users}
+        />
+      </div>
     </div>
   );
 }

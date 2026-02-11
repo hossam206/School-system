@@ -33,7 +33,7 @@ import { cookies } from "next/headers";
   url: string,
   options: RequestInit & { includeAuth?: boolean } = {}
 ) {
-  const baseURL = process.env.NEXT_PUBLIC_BASE_URL!;
+  const baseURL = process.env.BASE_URL!;
   const fullUrl = baseURL + url;
    console.log('full url is',fullUrl)
   const includeAuth = options.includeAuth !== false;
