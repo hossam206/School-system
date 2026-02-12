@@ -24,11 +24,10 @@ const columns: ColumnDef<User>[] = [
     key: "role",
     header: "Role",
     render: (row) => (
-      <span className="max-w-[200px] overflow-auto inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium capitalize">
-        {row.role} + 'dadasdsad dasdasd dasdasd asd a dadasdsad dasdasd dasdasd asd a dadasdsad dasdasd dasdasd asd a dadasdsad dasdasd dasdasd asd a dadasdsad dasdasd dasdasd asd a dadasdsad dasdasd dasdasd asd a'
+      <span className=" overflow-auto inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium capitalize">
+        {row.role}
       </span>
     ),
-    className: "bg-red-500",
   },
   {
     key: "status",
