@@ -195,8 +195,8 @@ function Table<T extends Record<string, any>>({
     <TableBase className={className}>
       <TableHeader>
         <TableRow>
-          {headers.map((header) => (
-            <TableHead key={header?.key} className={header.className}>
+          {headers.map((header , key) => (
+            <TableHead key={key} className={header.className}>
               {header.label}
             </TableHead>
           ))}
@@ -231,7 +231,6 @@ function Table<T extends Record<string, any>>({
   )
 }
 
-// ─── Exports ─────────────────────────────────────────────────────────────────
 
 export {
   TableBase as TableContainer,

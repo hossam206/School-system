@@ -66,6 +66,16 @@ const actions: TableAction<User>[] = [
   },
 ]
 
+
+  const metaData = {
+    current_page: 1,
+    from: 1,
+    to: 10,
+    last_page: 474,
+    per_page: 10,
+    total: 4734,
+  };
+
 export default function UsersPage() {
   const { data: users = [], isLoading } = useQuery<User[]>({
     queryKey: ["users"],
@@ -87,6 +97,7 @@ export default function UsersPage() {
         data={users}
         columns={columns}
         actions={actions}
+        meta={metaData}
         loading={isLoading}
         emptyMessage="No users found."
         getRowId={(user) => user.id}

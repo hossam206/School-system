@@ -20,6 +20,14 @@ export interface DataTableProps<T> {
   columns: ColumnDef<T>[]
   actions?: TableAction<T>[]
   loading?: boolean
+  meta: { 
+    current_page: number,
+    from: number,
+    to: number,
+    last_page: number,
+    per_page: number,
+    total: number
+  }
   emptyMessage?: string
   skeletonRows?: number
   onRowClick?: (row: T) => void

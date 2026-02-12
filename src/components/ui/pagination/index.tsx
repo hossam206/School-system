@@ -85,7 +85,7 @@ function Pagination({ meta, className, onPageChange, ...props }: PaginationProps
       aria-label="pagination"
       data-slot="pagination"
       dir={isRtl ? "rtl" : "ltr"}
-      className={cn("mx-auto flex w-full justify-center", className)}
+      className={cn("my-2", className)}
       {...props}
     >
       <ul className="flex flex-row items-center gap-1">
