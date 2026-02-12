@@ -8,8 +8,6 @@ export default async function Home({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  // Enable static rendering
-  setRequestLocale(locale);
   const t = await getTranslations();
 
   const metaData = {
@@ -24,9 +22,6 @@ export default async function Home({
     <div className="container">
       <h1 className="text-black">{t("hello")}</h1>
       <MyLink href={"/about"}>to about</MyLink>
-      <div className="max-w-[400px] mx-auto">
-        <Pagination meta={metaData}  />
-      </div>
     </div>
   );
 }

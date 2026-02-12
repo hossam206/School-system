@@ -4,6 +4,22 @@
   --color-primary: #ff0000;
   --color-secondary: #9333ea;
   --color-tertiary: #14b8a6;
+
+  /* shadcn semantic colors */
+  --color-background: #ffffff;
+  --color-foreground: #09090b;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #18181b;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #09090b;
+  --color-card: #ffffff;
+  --color-card-foreground: #09090b;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #18181b;
+  --color-destructive: #ef4444;
 }
 
 @utility container {

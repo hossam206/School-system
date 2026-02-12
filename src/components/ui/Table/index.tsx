@@ -212,11 +212,11 @@ function Table<T extends Record<string, any>>({
             className={onClick ? "cursor-pointer" : ""}
             onClick={() => onClick?.(row)}
           >
-            {headers.map((header) => (
-              <TableCell key={header.key} className={header.className}>
+            {headers.map((header , key) => (
+              <TableCell key={key} className={header.className}>
                 {header.render
-                  ? header.render(row[header.key], row)
-                  : String(row[header.key] ?? "")}
+                  ? header.render(row[key], row)
+                  : String(row[key] ?? "")}
               </TableCell>
             ))}
             {haveActions && actions.length > 0 && (
