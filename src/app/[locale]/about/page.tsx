@@ -2,8 +2,7 @@
 
  import Button from "@/src/components/ui/Button";
 import { Pagination } from "@/src/components/ui/pagination";
-import { useFetch } from "@/src/hooks/useFetch";
-
+ 
 export default function AboutPage() {
 
   // if (loading) return <div>Loading...</div>;
