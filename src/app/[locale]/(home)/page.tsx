@@ -1,3 +1,4 @@
+import ModalDemo from "@/src/components/ui/Modal/ModalDemo";
 import MyLink from "@/src/components/helpers/myLink";
 import { Pagination } from "@/src/components/ui/pagination";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -22,6 +23,7 @@ export default async function Home({
     <div className="container">
       <h1 className="text-black">{t("hello")}</h1>
       <MyLink href={"/about"}>to about</MyLink>
+      <ModalDemo />
     </div>
   );
 }

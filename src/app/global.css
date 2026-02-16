@@ -58,3 +58,76 @@
   @media (width >= 1280px) { max-width: 1280px; }
   @media (width >= 1536px) { max-width: 1536px; }
 }
+
+/* Dialog/Modal Animations */
+@keyframes dialog-overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-overlay-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-content-fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes dialog-content-fade-out {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+}
+
+@utility animate-in {
+  animation-fill-mode: both;
+}
+
+@utility animate-out {
+  animation-fill-mode: both;
+}
+
+@utility fade-in-0 {
+  animation-name: dialog-overlay-fade-in;
+  animation-duration: 500ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility fade-out-0 {
+  animation-name: dialog-overlay-fade-out;
+  animation-duration: 400ms;
+  animation-timing-function: ease-in-out;
+}
+
+@utility zoom-in-95 {
+  animation-name: dialog-content-fade-in;
+  animation-duration: 500ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility zoom-out-95 {
+  animation-name: dialog-content-fade-out;
+  animation-duration: 400ms;
+  animation-timing-function: ease-in-out;
+}

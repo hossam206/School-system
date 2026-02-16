@@ -2,7 +2,6 @@ import "@/src/app/global.css";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { createMetadata } from "@/src/utils/generateMetadata";
-import { QueryProvider } from "@/src/providers/QueryProvider";
 
 export function generateStaticParams() {
   return [{ locale: "en" }, { locale: "ar" }];
@@ -25,7 +24,7 @@ export const generateMetadata = createMetadata(
       "real estate platform ar",
       "real estate platform en",
     ],
-   }
+  },
 );
 export default async function RootLayout({
   children,
@@ -37,9 +36,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <NextIntlClientProvider>
-        <body className="antialiased">
-          <QueryProvider>{children}</QueryProvider>
-        </body>
+        <body className="antialiased">{children}</body>
       </NextIntlClientProvider>
     </html>
   );

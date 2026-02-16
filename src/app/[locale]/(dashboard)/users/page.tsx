@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useQuery } from "@tanstack/react-query"
-import { Pencil, Trash2 } from "lucide-react"
-import { DataTable } from "@/src/components/ui/data-table"
-import type { ColumnDef, TableAction } from "@/src/components/ui/data-table"
-import type { User } from "@/src/types/user"
+import { useState, useEffect } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import { DataTable } from "@/src/components/ui/data-table";
+import type { ColumnDef, TableAction } from "@/src/components/ui/data-table";
+import type { User } from "@/src/types/user";
 
 const columns: ColumnDef<User>[] = [
   {
@@ -48,7 +48,7 @@ const columns: ColumnDef<User>[] = [
     key: "createdAt",
     header: "Created At",
   },
-]
+];
 
 const actions: TableAction<User>[] = [
   {
@@ -64,27 +64,38 @@ const actions: TableAction<User>[] = [
     variant: "destructive",
     show: (user) => user.role !== "admin",
   },
-]
+];
 
-
-  const metaData = {
-    current_page: 1,
-    from: 1,
-    to: 10,
-    last_page: 474,
-    per_page: 10,
-    total: 4734,
-  };
+const metaData = {
+  current_page: 1,
+  from: 1,
+  to: 10,
+  last_page: 474,
+  per_page: 10,
+  total: 4734,
+};
 
 export default function UsersPage() {
-  const { data: users = [], isLoading } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: async () => {
-      const response = await fetch("/api/users")
-      if (!response.ok) throw new Error("Failed to fetch users")
-      return response.json()
-    },
-  })
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/users");
+        if (!response.ok) throw new Error("Failed to fetch users");
+        const data = await response.json();
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchUsers();
+  }, []);
 
   return (
     <div className="container py-8">
@@ -104,5 +115,5 @@ export default function UsersPage() {
         onRowClick={(user) => console.log("Clicked:", user.name)}
       />
     </div>
-  )
+  );
 }

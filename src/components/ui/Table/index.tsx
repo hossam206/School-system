@@ -15,7 +15,7 @@ function TableBase({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto scrollbar-modern"
+      className="relative w-full overflow-x-auto scrollbar-modern  px-3"
     >
       <table
         data-slot="table"
