@@ -1,135 +1,113 @@
 "use client";
-import * as React from "react";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  MoreHorizontalIcon,
-} from "lucide-react";
-import { cn } from "@/src/lib/utils";
-import { PaginationType } from "@/src/types/Pagination";
-import { useLocale, useTranslations } from "next-intl";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
-type PaginationProps = React.ComponentProps<"nav"> & {
+import * as React from "react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/src/lib/utils";
+import type { PaginationType } from "@/src/types/Pagination";
+
+type PaginationProps = Omit<React.ComponentProps<"nav">, "children"> & {
   meta: PaginationType;
   onPageChange?: (page: number) => void;
+  /** Search param that holds the page number (default "page"). */
+  pageParam?: string;
 };
 
 function getPageNumbers(
   currentPage: number,
   lastPage: number
 ): (number | "ellipsis")[] {
-  const pages: (number | "ellipsis")[] = [];
-
   if (lastPage <= 7) {
-    for (let i = 1; i <= lastPage; i++) pages.push(i);
-    return pages;
+    return Array.from({ length: lastPage }, (_, index) => index + 1);
   }
 
-  // Always show first page
-  pages.push(1);
+  const pages: (number | "ellipsis")[] = [1];
+  if (currentPage > 3) pages.push("ellipsis");
 
-  if (currentPage > 3) {
-    pages.push("ellipsis");
-  }
-
-  // Pages around current
   const start = Math.max(2, currentPage - 1);
   const end = Math.min(lastPage - 1, currentPage + 1);
+  for (let page = start; page <= end; page++) pages.push(page);
 
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-
-  if (currentPage < lastPage - 2) {
-    pages.push("ellipsis");
-  }
-
-  // Always show last page
+  if (currentPage < lastPage - 2) pages.push("ellipsis");
   pages.push(lastPage);
 
   return pages;
 }
 
-function Pagination({ meta, className, onPageChange, ...props }: PaginationProps) {
-  const { last_page } = meta;
+const stepStyles = cn(
+  "inline-flex h-9 items-center gap-1 rounded-md border border-border bg-card px-2.5 text-sm font-medium text-foreground",
+  "transition-colors hover:bg-accent hover:text-accent-foreground outline-none cursor-pointer",
+  "focus-visible:ring-2 focus-visible:ring-ring/40",
+  "disabled:pointer-events-none disabled:opacity-50"
+);
+
+function Pagination({
+  meta,
+  className,
+  onPageChange,
+  pageParam = "page",
+  ...props
+}: PaginationProps) {
+  const t = useTranslations("pagination");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const pageFromUrl = Number(searchParams.get("page")) || meta.current_page;
-  const [activePage, setActivePage] = React.useState(pageFromUrl);
-  const pages = getPageNumbers(activePage, last_page);
-  const locale = useLocale();
-  const t = useTranslations("pagination");
-  const isRtl = locale === "ar";
 
-  React.useEffect(() => {
-    const urlPage = Number(searchParams.get("page")) || meta.current_page;
-    setActivePage(urlPage);
-  }, [searchParams, meta.current_page]);
+  const lastPage = Math.max(1, meta.last_page);
+  const currentPage = Math.min(Math.max(1, meta.current_page), lastPage);
+  const pages = getPageNumbers(currentPage, lastPage);
 
-  function handlePageChange(page: number) {
-    setActivePage(page);
+  if (meta.last_page <= 1) return null;
+
+  function goTo(page: number) {
+    if (page < 1 || page > lastPage || page === currentPage) return;
     const params = new URLSearchParams(searchParams.toString());
-    params.set("page", String(page));
-    router.push(`${pathname}?${params.toString()}`);
+    params.set(pageParam, String(page));
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
     onPageChange?.(page);
   }
 
-  const PrevIcon = isRtl ? ChevronRightIcon : ChevronLeftIcon;
-  const NextIcon = isRtl ? ChevronLeftIcon : ChevronRightIcon;
-
   return (
     <nav
-      role="navigation"
       aria-label="pagination"
       data-slot="pagination"
-      dir={isRtl ? "rtl" : "ltr"}
-      className={cn("my-2", className)}
+      className={cn("flex", className)}
       {...props}
     >
-      <ul className="flex flex-row items-center gap-1">
-        {/* Previous */}
+      <ul className="flex flex-row flex-wrap items-center gap-1">
         <li>
-          {activePage > 1 ? (
-            <button
-              onClick={() => handlePageChange(activePage - 1)}
-              aria-label="Go to previous page"
-              className="inline-flex items-center gap-1 rounded-md px-2.5 py-2 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer"
-            >
-              <PrevIcon className="size-4" />
-              <span className="hidden sm:block">{t("previous")}</span>
-            </button>
-          ) : (
-            <span className="inline-flex items-center gap-1 rounded-md px-2.5 py-2 text-sm text-muted-foreground pointer-events-none opacity-50">
-              <PrevIcon className="size-4" />
-              <span className="hidden sm:block">{t("previous")}</span>
-            </span>
-          )}
+          <button
+            type="button"
+            onClick={() => goTo(currentPage - 1)}
+            disabled={currentPage <= 1}
+            aria-label={t("previous")}
+            className={stepStyles}
+          >
+            <ChevronLeft className="size-4 rtl:rotate-180" aria-hidden />
+            <span className="hidden sm:inline">{t("previous")}</span>
+          </button>
         </li>
 
-        {/* Page numbers */}
         {pages.map((page, index) =>
           page === "ellipsis" ? (
-            <li key={`ellipsis-${index}`}>
-              <span
-                aria-hidden
-                className="flex size-9 items-center justify-center"
-              >
-                <MoreHorizontalIcon className="size-4" />
-                <span className="sr-only">More pages</span>
+            <li key={`ellipsis-${index}`} aria-hidden>
+              <span className="flex size-9 items-center justify-center text-muted-foreground">
+                <MoreHorizontal className="size-4" />
               </span>
             </li>
           ) : (
             <li key={page}>
               <button
-                onClick={() => handlePageChange(page)}
-                aria-current={page === activePage ? "page" : undefined}
+                type="button"
+                onClick={() => goTo(page)}
+                aria-current={page === currentPage ? "page" : undefined}
                 className={cn(
-                  "inline-flex size-9  items-center justify-center rounded-md text-sm transition-colors cursor-pointer",
-                  page === activePage
-                    ? "border border-solid border-gray-200 transition-colors ease-in-out duration-200   cursor-pointer rounded-md text-primary-foreground pointer-events-none"
-                    : "hover:bg-accent hover:text-accent-foreground"
+                  "inline-flex size-9 items-center justify-center rounded-md border text-sm font-medium tabular-nums",
+                  "transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+                  page === currentPage
+                    ? "pointer-events-none border-primary bg-primary text-primary-foreground shadow-xs"
+                    : "cursor-pointer border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
               >
                 {page}
@@ -138,23 +116,17 @@ function Pagination({ meta, className, onPageChange, ...props }: PaginationProps
           )
         )}
 
-        {/* Next */}
         <li>
-          {activePage < last_page ? (
-            <button
-              onClick={() => handlePageChange(activePage + 1)}
-              aria-label="Go to next page"
-              className="inline-flex items-center gap-1 rounded-md px-2.5 py-2 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer"
-            >
-              <span className="hidden sm:block">{t("next")}</span>
-              <NextIcon className="size-4" />
-            </button>
-          ) : (
-            <span className="inline-flex items-center gap-1 rounded-md px-2.5 py-2 text-sm text-muted-foreground pointer-events-none opacity-50"> 
-              <span className="hidden  sm:block">{t("next")}</span>
-              <NextIcon className="size-4" />
-            </span>
-          )}
+          <button
+            type="button"
+            onClick={() => goTo(currentPage + 1)}
+            disabled={currentPage >= lastPage}
+            aria-label={t("next")}
+            className={stepStyles}
+          >
+            <span className="hidden sm:inline">{t("next")}</span>
+            <ChevronRight className="size-4 rtl:rotate-180" aria-hidden />
+          </button>
         </li>
       </ul>
     </nav>
@@ -162,4 +134,4 @@ function Pagination({ meta, className, onPageChange, ...props }: PaginationProps
 }
 
 export { Pagination };
-export type { PaginationType };
+export type { PaginationProps, PaginationType };

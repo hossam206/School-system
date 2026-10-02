@@ -3,6 +3,10 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+// The browser only talks to this app; /api/v1/* is forwarded to the Express API
+// so its httpOnly auth cookies are first-party and the API needs no CORS setup.
+const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:4000";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   compress: true,
@@ -21,6 +25,14 @@ const nextConfig: NextConfig = {
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${BACKEND_URL}/api/v1/:path*`,
+      },
+    ];
   },
   async headers() {
     return [

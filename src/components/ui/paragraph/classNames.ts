@@ -1,7 +1,7 @@
-import clx from "clsx";
+import { cn } from "@/src/lib/utils";
 
 // Base styles for the paragraph
-export const baseStyles = "font-normal text-md leading-relaxed";
+export const baseStyles = "font-normal leading-relaxed";
 
 // Size-based styles
 export const sizeStyles = {
@@ -13,18 +13,18 @@ export const sizeStyles = {
 
 // Color-based styles
 export const colorStyles = {
-  dark: "text-gray-60", // Default text color
-  light: "text-gray-10", // Lighter text color
-  lightGray: "text-gray-50",
-  darkGray: "text-gray-70",
-  error: "text-red-500", // Error text color
+  dark: "text-muted-foreground", // Default text color
+  light: "text-muted", // Lighter text color (on dark surfaces)
+  lightGray: "text-slate-400",
+  darkGray: "text-foreground",
+  error: "text-destructive", // Error text color
 };
 
 // Alignment-based styles
 export const alignStyles = {
-  left: "text-left",
+  left: "text-start",
   center: "text-center",
-  right: "text-right",
+  right: "text-end",
 };
 
 // Utility function to combine styles
@@ -34,7 +34,7 @@ export const getParagraphStyles = (
   align: keyof typeof alignStyles,
   className?: string
 ) => {
-  return clx(
+  return cn(
     baseStyles,
     sizeStyles[size],
     colorStyles[color],

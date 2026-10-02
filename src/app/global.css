@@ -1,25 +1,62 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+/* Light theme only: `dark:` utilities only apply under an explicit .dark class,
+   never from the OS colour-scheme preference. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #ff0000;
-  --color-secondary: #9333ea;
+  /* Brand / intent colors (light theme only) */
+  --color-primary: #4f46e5;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
   --color-tertiary: #14b8a6;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #16a34a;
+  --color-success-foreground: #ffffff;
+  --color-warning: #d97706;
+  --color-warning-foreground: #ffffff;
 
-  /* shadcn semantic colors */
-  --color-background: #ffffff;
-  --color-foreground: #09090b;
-  --color-muted: #f4f4f5;
-  --color-muted-foreground: #71717a;
-  --color-accent: #f4f4f5;
-  --color-accent-foreground: #18181b;
+  /* Semantic surface colors (slate) */
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
   --color-popover: #ffffff;
-  --color-popover-foreground: #09090b;
+  --color-popover-foreground: #0f172a;
   --color-card: #ffffff;
-  --color-card-foreground: #09090b;
-  --color-border: #e4e4e7;
-  --color-input: #e4e4e7;
-  --color-ring: #18181b;
-  --color-destructive: #ef4444;
+  --color-card-foreground: #0f172a;
+  --color-border: #e2e8f0;
+  --color-input: #cbd5e1;
+  --color-ring: #4f46e5;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 @utility scrollbar-modern {
@@ -57,77 +94,4 @@
   @media (width >= 1024px) { max-width: 1024px; }
   @media (width >= 1280px) { max-width: 1280px; }
   @media (width >= 1536px) { max-width: 1536px; }
-}
-
-/* Dialog/Modal Animations */
-@keyframes dialog-overlay-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes dialog-overlay-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes dialog-content-fade-in {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -48%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@keyframes dialog-content-fade-out {
-  from {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translate(-50%, -48%) scale(0.95);
-  }
-}
-
-@utility animate-in {
-  animation-fill-mode: both;
-}
-
-@utility animate-out {
-  animation-fill-mode: both;
-}
-
-@utility fade-in-0 {
-  animation-name: dialog-overlay-fade-in;
-  animation-duration: 500ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@utility fade-out-0 {
-  animation-name: dialog-overlay-fade-out;
-  animation-duration: 400ms;
-  animation-timing-function: ease-in-out;
-}
-
-@utility zoom-in-95 {
-  animation-name: dialog-content-fade-in;
-  animation-duration: 500ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@utility zoom-out-95 {
-  animation-name: dialog-content-fade-out;
-  animation-duration: 400ms;
-  animation-timing-function: ease-in-out;
 }

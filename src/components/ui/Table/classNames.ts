@@ -3,8 +3,8 @@ import clx from "clsx";
 // Action menu trigger styles
 export const actionTriggerStyles = clx(
   "inline-flex items-center justify-center rounded-md p-1.5 cursor-pointer",
-  "text-gray-60 hover:bg-gray-10 hover:text-gray-90 transition-colors",
-  "outline-none"
+  "text-muted-foreground hover:bg-muted hover:text-foreground transition-colors",
+  "outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
 );
 
 // Action menu item base styles
@@ -15,8 +15,8 @@ export const actionItemBaseStyles = clx(
 
 // Action menu item variant styles
 export const actionVariantStyles = {
-  primary: clx("text-darkgreen hover:bg-green-50"),
-  destructive: clx("text-[#C1342E] hover:bg-[#FFE4DE]"),
-  secondary: clx("text-gray-70 hover:bg-gray-10"),
-  default: clx("text-gray-70 hover:bg-gray-10"),
+  primary: clx("text-primary hover:bg-primary/10"),
+  destructive: clx("text-destructive hover:bg-destructive/10"),
+  secondary: clx("text-foreground hover:bg-accent"),
+  default: clx("text-foreground hover:bg-accent"),
 };

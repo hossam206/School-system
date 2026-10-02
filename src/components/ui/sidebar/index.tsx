@@ -1,110 +1,211 @@
 "use client";
 
-import { cn } from "@/src/lib/utils";
+import * as React from "react";
 import {
+  BookOpen,
+  GraduationCap,
   LayoutDashboard,
+  MonitorSmartphone,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Presentation,
+  School,
   Users,
-  Settings,
-  FileText,
-  BarChart3,
-  Bell,
-  ChevronLeft,
-  LogOut,
+  type LucideIcon,
 } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/src/i18n/navigation";
+import { cn } from "@/src/lib/utils";
+import { SidebarAccount } from "./SidebarAccount";
 
-interface NavItem {
-  label: string;
+type NavKey =
+  | "dashboard"
+  | "grades"
+  | "subjects"
+  | "classes"
+  | "teachers"
+  | "students"
+  | "sessions";
+
+type NavItem = {
+  key: NavKey;
   href: string;
-  icon: React.ReactNode;
-}
+  icon: LucideIcon;
+};
 
 const navItems: NavItem[] = [
-  { label: "Dashboard", href: "/", icon: <LayoutDashboard className="h-5 w-5" /> },
-  { label: "Users", href: "/users", icon: <Users className="h-5 w-5" /> },
-  { label: "Reports", href: "/reports", icon: <BarChart3 className="h-5 w-5" /> },
-  { label: "Documents", href: "/documents", icon: <FileText className="h-5 w-5" /> },
-  { label: "Notifications", href: "/notifications", icon: <Bell className="h-5 w-5" /> },
-  { label: "Settings", href: "/settings", icon: <Settings className="h-5 w-5" /> },
+  { key: "dashboard", href: "/", icon: LayoutDashboard },
+  { key: "grades", href: "/grades", icon: GraduationCap },
+  { key: "subjects", href: "/subjects", icon: BookOpen },
+  { key: "classes", href: "/classes", icon: School },
+  { key: "teachers", href: "/teachers", icon: Presentation },
+  { key: "students", href: "/students", icon: Users },
+  { key: "sessions", href: "/sessions", icon: MonitorSmartphone },
 ];
 
-export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
-  const pathname = usePathname();
+const DESKTOP_QUERY = "(min-width: 768px)";
 
-  // Strip locale prefix (e.g. /en/users -> /users)
-  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, "") || "/";
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+// "auto" follows the breakpoint (rail below md, expanded at md+) until the
+// viewport is known or the user toggles the sidebar.
+type Mode = "auto" | "collapsed" | "expanded";
+
+const modeStyles: Record<
+  Mode,
+  { aside: string; label: string; link: string; brand: string }
+> = {
+  auto: {
+    aside: "w-[68px] md:w-64",
+    label: "hidden md:inline",
+    link: "justify-center px-0 md:justify-start md:px-3",
+    brand: "justify-center px-0 md:justify-start md:px-4",
+  },
+  collapsed: {
+    aside: "w-[68px]",
+    label: "hidden",
+    link: "justify-center px-0",
+    brand: "justify-center px-0",
+  },
+  expanded: {
+    aside: "w-64",
+    label: "inline",
+    link: "justify-start px-3",
+    brand: "justify-start px-4",
+  },
+};
+
+export function Sidebar() {
+  const t = useTranslations("nav");
+  const pathname = usePathname();
+  const [collapsed, setCollapsed] = React.useState<boolean | null>(null);
+  const [isDesktop, setIsDesktop] = React.useState<boolean | null>(null);
+
+  React.useEffect(() => {
+    const media = window.matchMedia(DESKTOP_QUERY);
+    const update = () => setIsDesktop(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  const effectiveCollapsed =
+    collapsed ?? (isDesktop === null ? null : !isDesktop);
+  const mode: Mode =
+    effectiveCollapsed === null
+      ? "auto"
+      : effectiveCollapsed
+        ? "collapsed"
+        : "expanded";
+  const styles = modeStyles[mode];
+  const toggleLabel = effectiveCollapsed ? t("expand") : t("collapse");
+
+  const handleToggle = () => {
+    const current =
+      effectiveCollapsed ?? !window.matchMedia(DESKTOP_QUERY).matches;
+    setCollapsed(!current);
+  };
 
   return (
     <aside
       className={cn(
-        "sticky top-0 h-screen flex flex-col border-r border-border bg-card transition-all duration-300",
-        collapsed ? "w-[68px]" : "w-[250px]",
+        "sticky top-0 flex h-screen shrink-0 flex-col border-e border-border bg-card",
+        "transition-[width] duration-200 ease-in-out",
+        styles.aside
       )}
     >
-      {/* Header */}
-      <div className="flex h-14 items-center justify-between border-b border-border px-4">
-        {!collapsed && (
-          <span className="text-base font-semibold text-foreground truncate">
-            Dashboard
-          </span>
+      {/* Brand */}
+      <div
+        className={cn(
+          "flex h-16 items-center gap-2.5 border-b border-border",
+          styles.brand
         )}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
+      >
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
+          <GraduationCap className="size-4" aria-hidden />
+        </span>
+        <span
           className={cn(
-            "inline-flex items-center justify-center rounded-md p-1.5",
-            "text-muted-foreground hover:bg-muted hover:text-foreground",
-            "transition-colors cursor-pointer",
-            collapsed && "mx-auto",
+            "truncate text-sm font-semibold tracking-tight text-foreground",
+            styles.label
           )}
         >
-          <ChevronLeft
-            className={cn(
-              "h-5 w-5 transition-transform duration-300",
-              collapsed && "rotate-180",
-            )}
-          />
-        </button>
+          {t("appName")}
+        </span>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 p-3 overflow-y-auto scrollbar-modern">
+      <nav
+        aria-label={t("appName")}
+        className="flex-1 space-y-1 overflow-y-auto p-3 scrollbar-modern"
+      >
         {navItems.map((item) => {
-          const isActive = pathWithoutLocale === item.href;
+          const Icon = item.icon;
+          const label = t(item.key);
+          const active = isActivePath(pathname, item.href);
 
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
+              title={mode === "expanded" ? undefined : label}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-muted text-foreground"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
-                collapsed && "justify-center px-0",
+                "flex h-10 items-center gap-3 rounded-md text-sm font-medium transition-colors outline-none",
+                "focus-visible:ring-2 focus-visible:ring-ring/40",
+                active
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                styles.link
               )}
-              title={collapsed ? item.label : undefined}
             >
-              <span className="shrink-0">{item.icon}</span>
-              {!collapsed && <span className="truncate">{item.label}</span>}
+              <Icon className="size-5 shrink-0" aria-hidden />
+              <span className={cn("truncate", styles.label)}>{label}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="border-t border-border p-3">
+      {/* Signed-in user, log out and collapse toggle */}
+      <div className="space-y-1 border-t border-border p-3">
+        <SidebarAccount
+          labelClassName={styles.label}
+          itemClassName={styles.link}
+          showTitles={mode !== "expanded"}
+        />
         <button
+          type="button"
+          onClick={handleToggle}
+          aria-label={toggleLabel}
+          aria-expanded={effectiveCollapsed === null ? undefined : !effectiveCollapsed}
+          title={toggleLabel}
           className={cn(
-            "flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium",
-            "text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors cursor-pointer",
-            collapsed && "justify-center px-0",
+            "flex h-10 w-full items-center gap-3 rounded-md text-sm font-medium text-muted-foreground",
+            "transition-colors hover:bg-muted hover:text-foreground outline-none cursor-pointer",
+            "focus-visible:ring-2 focus-visible:ring-ring/40",
+            styles.link
           )}
         >
-          <LogOut className="h-5 w-5 shrink-0" />
-          {!collapsed && <span>Logout</span>}
+          {mode === "auto" ? (
+            <>
+              <PanelLeftOpen
+                className="size-5 shrink-0 rtl:-scale-x-100 md:hidden"
+                aria-hidden
+              />
+              <PanelLeftClose
+                className="hidden size-5 shrink-0 rtl:-scale-x-100 md:block"
+                aria-hidden
+              />
+            </>
+          ) : effectiveCollapsed ? (
+            <PanelLeftOpen className="size-5 shrink-0 rtl:rotate-180" aria-hidden />
+          ) : (
+            <PanelLeftClose className="size-5 shrink-0 rtl:rotate-180" aria-hidden />
+          )}
+          <span className={cn("truncate", styles.label)}>{t("collapse")}</span>
         </button>
       </div>
     </aside>

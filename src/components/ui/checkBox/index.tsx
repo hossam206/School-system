@@ -21,7 +21,7 @@ const Checkbox = React.forwardRef<
   CheckboxProps // Props type
 >(({ label, className, disabled, onCheckedChange, ...props }, ref) => {
   return (
-    <div className="flex flex-row items-center gap-1">
+    <div className="flex flex-row items-center gap-2">
       <CheckboxPrimitive.Root
         ref={ref}
         className={cn(checkBoxstyles.checkBox, className)}
@@ -30,7 +30,7 @@ const Checkbox = React.forwardRef<
         {...props}>
         <CheckboxPrimitive.Indicator
           className={cn(checkBoxstyles.checkBoxIndicator)}>
-          <Check className="h-4 w-4 " />
+          <Check className="size-3.5" />
         </CheckboxPrimitive.Indicator>
       </CheckboxPrimitive.Root>
       {label && (

@@ -1,54 +1,52 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
-import { CheckCircle, XCircle } from "lucide-react"; 
+import { CheckCircle2, XCircle } from "lucide-react";
 import { toasterStyles } from "./classNames";
 
-type ToasterProps = React.ComponentProps<typeof Sonner> & {
+type ToasterProps = Omit<React.ComponentProps<typeof Sonner>, "theme"> & {
   status?: "success" | "error";
   description?: string;
-  theme?: "system" | "dark" | "light";
 };
 
-const Toaster = ({ status, description, ...props }: ToasterProps) => {
-  const { theme } = useTheme();
-
-  const validTheme = (
-    ["system", "dark", "light"].includes(theme || "") ? theme : "system"
-  ) as "system" | "dark" | "light";
-
+const Toaster = ({ status, description, style, ...props }: ToasterProps) => {
   useEffect(() => {
     if (!status || !description?.trim()) return;
 
-    const toastOptions = {
-      icon:
-        status === "success" ? (
-          <CheckCircle size={24} className="text-green-40" />
-        ) : (
-          <XCircle size={24} className="text-red-700" />
-        ),
-    };
-
     if (status === "success") {
-      toast.success(description, toastOptions);
+      toast.success(description, {
+        icon: <CheckCircle2 className="size-5 text-success" />,
+      });
     } else {
-      toast.error(description, toastOptions);
+      toast.error(description, {
+        icon: <XCircle className="size-5 text-destructive" />,
+      });
     }
   }, [status, description]);
 
   return (
     <Sonner
-      theme={validTheme}
+      theme="light"
       className="toaster group"
+      style={
+        {
+          "--normal-bg": "var(--color-card)",
+          "--normal-text": "var(--color-card-foreground)",
+          "--normal-border": "var(--color-border)",
+          ...style,
+        } as React.CSSProperties
+      }
       toastOptions={{
         classNames: {
           toast: toasterStyles.toastContainerStyles,
-          description:
-            "group-[.toaster]:text-muted-foreground text-sm capitalize",
-          success: "!bg-green-10 !border-green-60 !text-green-80",
-          error: "!bg-red-100 !border-red-300 !text-red-800",
+          description: toasterStyles.description,
+          success: toasterStyles.success,
+          error: toasterStyles.error,
+          warning: toasterStyles.warning,
+          info: toasterStyles.info,
+          actionButton: toasterStyles.actionButton,
+          cancelButton: toasterStyles.cancelButton,
         },
       }}
       {...props}
@@ -57,3 +55,5 @@ const Toaster = ({ status, description, ...props }: ToasterProps) => {
 };
 
 export default Toaster;
+export { Toaster };
+export type { ToasterProps };

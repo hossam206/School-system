@@ -1,6 +1,7 @@
 import "@/src/app/global.css";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
+import Toaster from "@/src/components/ui/toaster";
 import { createMetadata } from "@/src/utils/generateMetadata";
 
 export function generateStaticParams() {
@@ -11,21 +12,9 @@ interface RootLayoutProps {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }
-export const generateMetadata = createMetadata(
-  "home.Title",
-  "home.Description",
-  ["https://example.com/image.jpg"],
-  {
-    keywords: [
-      "realestate",
-      "MLS",
-      "real estate",
-      "real estate platform",
-      "real estate platform ar",
-      "real estate platform en",
-    ],
-  },
-);
+
+export const generateMetadata = createMetadata("app.Title", "app.Description");
+
 export default async function RootLayout({
   children,
   params,
@@ -36,7 +25,10 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <NextIntlClientProvider>
-        <body className="antialiased">{children}</body>
+        <body className="antialiased">
+          {children}
+          <Toaster position="top-right" />
+        </body>
       </NextIntlClientProvider>
     </html>
   );

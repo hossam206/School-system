@@ -1,19 +1,22 @@
 import clx from "clsx";
 export const TextInputStyles = {
   labelStyle: clx(
-    "flex flex-row items-center  gap-1 text-sm font-semibold text-gray-60 "
+    "flex flex-row items-center gap-1 text-sm font-medium text-foreground"
   ),
   inputStyle: clx(
-    "flex   rounded-lg border border-solid  bg-transparent px-3  py-2 text-base   transition-colors  disabled:cursor-not-allowed disabled:opacity-50 md:text-md md:leading-6 outline-none   placeholder:font-light placeholder:text-sm outline-none"
+    "flex h-9 w-full rounded-md border border-solid border-input bg-card px-3 text-sm text-foreground shadow-xs",
+    "transition-[color,box-shadow,border-color] outline-none",
+    "focus-within:border-primary focus-within:ring-2 focus-within:ring-ring/30",
+    "has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-muted has-[:disabled]:opacity-50",
+    "[&_input::placeholder]:text-muted-foreground"
   ),
-  // labelStyle: clx("flex flex-row items-center  gap-1 text-sm font-medium text-gray-40"),
   requiredInputStyle: clx(
-    "border-red-500 focus:ring-red-500",
-    "border-gray-300 focus:border-slate-700"
+    "border-destructive focus-within:border-destructive focus-within:ring-destructive/30"
   ),
-  errorMsg: clx("text-red-500 text-xs mt-1 "),
+  requiredMark: clx("text-destructive"),
+  errorMsg: clx("text-xs text-destructive"),
   showPassword: clx(
-    "absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer text-xl text-gray-60"
+    "flex items-center cursor-pointer text-muted-foreground hover:text-foreground [&_svg]:size-4"
   ),
 };
 export const getAditionalStyles = (className?: string) => {

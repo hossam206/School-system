@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,7 @@ import {
   DialogClose,
   DialogTrigger,
 } from "@/src/components/ui/select/dialog";
+import Button from "@/src/components/ui/Button";
 import { cn } from "@/src/lib/utils";
 
 export interface ModalProps {
@@ -46,44 +48,56 @@ export function Modal({
   maxWidth = "sm:max-w-lg",
   trigger,
 }: ModalProps) {
+  const hasHeader = !!(title || description);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
       <DialogContent
         showCloseButton={showCloseButton}
+        {...(!description ? { "aria-describedby": undefined } : {})}
         className={cn(
-          "bg-white dark:bg-gray-900",
-          "rounded-2xl shadow-2xl",
-          "border border-gray-200 dark:border-gray-800",
-          "transition-all duration-200",
+          "gap-0 bg-card text-card-foreground",
+          "rounded-xl shadow-xl border border-border",
           maxWidth,
           className
         )}
       >
-        {(title || description) && (
-          <DialogHeader className="space-y-3">
+        {hasHeader ? (
+          <DialogHeader className="gap-1.5 px-6 pt-6 pb-4 pe-12">
             {title && (
-              <DialogTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <DialogTitle className="text-lg font-semibold text-foreground">
                 {title}
               </DialogTitle>
             )}
             {description && (
-              <DialogDescription className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                {description}
+              <DialogDescription asChild>
+                <div className="text-sm leading-relaxed text-muted-foreground">
+                  {description}
+                </div>
               </DialogDescription>
             )}
           </DialogHeader>
+        ) : (
+          // Radix requires a title for accessibility; keep an empty hidden one.
+          <DialogTitle className="sr-only" />
         )}
 
         {children && (
-          <div className={cn("px-6 py-4", contentClassName)}>
+          <div
+            className={cn(
+              "max-h-[70vh] overflow-y-auto scrollbar-modern px-6 pb-6",
+              !hasHeader && "pt-6",
+              contentClassName
+            )}
+          >
             {children}
           </div>
         )}
 
         {footer && (
-          <DialogFooter className="gap-3 sm:gap-2">
+          <DialogFooter className="gap-2 border-t border-border bg-muted/40 px-6 py-4 sm:gap-2">
             {footer}
           </DialogFooter>
         )}
@@ -93,59 +107,67 @@ export function Modal({
 }
 
 // Confirmation Modal Variant
-export interface ConfirmModalProps extends Omit<ModalProps, 'footer'> {
+export interface ConfirmModalProps extends Omit<ModalProps, "footer"> {
   onConfirm?: () => void;
   onCancel?: () => void;
   confirmText?: string;
   cancelText?: string;
-  confirmVariant?: 'default' | 'destructive' | 'success';
+  confirmVariant?: "default" | "destructive" | "success";
   isLoading?: boolean;
 }
 
+const confirmButtonVariant = {
+  default: "btn-primary",
+  destructive: "btn-delete",
+  success: "success",
+} as const;
+
 export function ConfirmModal({
-  title = "Are you absolutely sure?",
-  description = "This action cannot be undone.",
-  confirmText = "Continue",
-  cancelText = "Cancel",
+  title,
+  description,
+  confirmText,
+  cancelText,
   confirmVariant = "default",
   onConfirm,
   onCancel,
   isLoading = false,
+  onOpenChange,
   ...props
 }: ConfirmModalProps) {
-  const confirmStyles = {
-    default: "bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100",
-    destructive: "bg-red-600 hover:bg-red-700 text-white",
-    success: "bg-green-600 hover:bg-green-700 text-white"
+  const t = useTranslations("common");
+
+  const handleCancel = () => {
+    onCancel?.();
+    onOpenChange?.(false);
   };
 
   const footer = (
     <>
-      <button
-        onClick={onCancel}
-        disabled={isLoading}
-        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {cancelText}
-      </button>
-      <button
+      <Button variant="btn-cancel" onClick={handleCancel} disabled={isLoading}>
+        {cancelText ?? t("cancel")}
+      </Button>
+      <Button
+        variant={confirmButtonVariant[confirmVariant]}
         onClick={onConfirm}
-        disabled={isLoading}
-        className={cn(
-          "px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
-          confirmStyles[confirmVariant]
-        )}
+        loading={isLoading}
       >
-        {isLoading ? "Loading..." : confirmText}
-      </button>
+        {confirmText ??
+          (confirmVariant === "destructive" ? t("deleteAction") : t("save"))}
+      </Button>
     </>
   );
 
   return (
     <Modal
-      title={title}
-      description={description}
+      title={title ?? t("confirmDeleteTitle")}
+      description={description ?? t("confirmDeleteDescription")}
       footer={footer}
+      onOpenChange={(next) => {
+        // Block closing (Esc / overlay / X) while the confirm action is running
+        if (!next && isLoading) return;
+        onOpenChange?.(next);
+      }}
+      maxWidth="sm:max-w-md"
       {...props}
     />
   );

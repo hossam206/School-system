@@ -1,21 +1,20 @@
-"use client"
+"use client";
 
-import { cn } from "@/src/lib/utils"
-import * as React from "react"
-import { Popover, PopoverContent, PopoverTrigger } from "../select/popover"
-import { Ellipsis } from "lucide-react"
+import * as React from "react";
+import { Ellipsis } from "lucide-react";
+import { cn } from "@/src/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "../select/popover";
 import {
   actionTriggerStyles,
   actionItemBaseStyles,
   actionVariantStyles,
-} from "./classNames"
+} from "./classNames";
 
- 
 function TableBase({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto scrollbar-modern  px-3"
+      className="relative w-full overflow-x-auto scrollbar-modern"
     >
       <table
         data-slot="table"
@@ -23,17 +22,17 @@ function TableBase({ className, ...props }: React.ComponentProps<"table">) {
         {...props}
       />
     </div>
-  )
+  );
 }
 
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
+      className={cn("bg-muted/50 [&_tr]:border-b [&_tr]:hover:bg-transparent", className)}
       {...props}
     />
-  )
+  );
 }
 
 function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
@@ -43,7 +42,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
       className={cn("[&_tr:last-child]:border-0", className)}
       {...props}
     />
-  )
+  );
 }
 
 function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
@@ -51,12 +50,12 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "bg-muted/50 border-t font-medium [&>tr]:last:border-b-0",
+        "bg-muted/50 border-t border-border font-medium [&>tr]:last:border-b-0",
         className
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
@@ -64,12 +63,12 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+        "border-b border-border transition-colors hover:bg-muted/40 data-[state=selected]:bg-muted",
         className
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableHead({ className, ...props }: React.ComponentProps<"th">) {
@@ -77,12 +76,13 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-10 px-4 text-start align-middle text-xs font-medium uppercase tracking-wide whitespace-nowrap text-muted-foreground",
+        "[&:has([role=checkbox])]:pe-0 *:[[role=checkbox]]:translate-y-0.5",
         className
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableCell({ className, ...props }: React.ComponentProps<"td">) {
@@ -90,12 +90,13 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "px-4 py-3 align-middle whitespace-nowrap text-foreground",
+        "[&:has([role=checkbox])]:pe-0 *:[[role=checkbox]]:translate-y-0.5",
         className
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableCaption({
@@ -105,35 +106,36 @@ function TableCaption({
   return (
     <caption
       data-slot="table-caption"
-      className={cn("text-muted-foreground mt-4 text-sm", className)}
+      className={cn("mt-4 text-sm text-muted-foreground", className)}
       {...props}
     />
-  )
+  );
 }
 
-// ─── DataTable Types ─────────────────────────────────────────────────────────
+// ─── Simple Table Types ──────────────────────────────────────────────────────
 
 export interface TableColumnHeader<T> {
-  id: keyof T & string
-  label: string
-  render?: (value: T[keyof T], row: T) => React.ReactNode
-  className?: string
+  id: keyof T & string;
+  label: string;
+  render?: (value: T[keyof T], row: T) => React.ReactNode;
+  className?: string;
 }
 
 export interface TableAction<T> {
-  label: string
-  value: string
-  variant?: keyof typeof actionVariantStyles
-  onclick: (row: T) => void
+  label: string;
+  value: string;
+  variant?: keyof typeof actionVariantStyles;
+  onclick: (row: T) => void;
 }
 
 export interface DataTableProps<T extends Record<string, any>> {
-  headers: TableColumnHeader<T>[]
-  data: T[]
-  onClick?: (row: T) => void
-  haveActions?: boolean
-  actions?: TableAction<T>[]
-  className?: string
+  headers: TableColumnHeader<T>[];
+  data: T[];
+  onClick?: (row: T) => void;
+  haveActions?: boolean;
+  actions?: TableAction<T>[];
+  actionsLabel?: string;
+  className?: string;
 }
 
 // ─── Actions Menu ────────────────────────────────────────────────────────────
@@ -141,35 +143,40 @@ export interface DataTableProps<T extends Record<string, any>> {
 function ActionsMenu<T extends Record<string, any>>({
   actions,
   row,
+  label,
 }: {
-  actions: TableAction<T>[]
-  row: T
+  actions: TableAction<T>[];
+  row: T;
+  label?: string;
 }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
+          type="button"
+          aria-label={label}
           className={actionTriggerStyles}
           onClick={(e) => e.stopPropagation()}
         >
-          <Ellipsis size={18} />
+          <Ellipsis className="size-4" aria-hidden />
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-40 p-1">
         <div className="flex flex-col gap-0.5">
           {actions.map((action) => (
             <button
+              type="button"
               key={action.value}
               className={cn(
                 actionItemBaseStyles,
                 actionVariantStyles[action.variant ?? "default"]
               )}
               onClick={(e) => {
-                e.stopPropagation()
-                action.onclick(row)
-                setOpen(false)
+                e.stopPropagation();
+                action.onclick(row);
+                setOpen(false);
               }}
             >
               {action.label}
@@ -178,10 +185,10 @@ function ActionsMenu<T extends Record<string, any>>({
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
 
-// ─── DataTable Component ─────────────────────────────────────────────────────
+// ─── Simple Table Component ──────────────────────────────────────────────────
 
 function Table<T extends Record<string, any>>({
   headers,
@@ -189,48 +196,56 @@ function Table<T extends Record<string, any>>({
   onClick,
   haveActions = false,
   actions = [],
+  actionsLabel,
   className,
 }: DataTableProps<T>) {
+  const showActions = haveActions && actions.length > 0;
+
   return (
-    <TableBase className={className}>
-      <TableHeader>
-        <TableRow>
-          {headers.map((header , key) => (
-            <TableHead key={key} className={header.className}>
-              {header.label}
-            </TableHead>
-          ))}
-          {haveActions && (
-            <TableHead className="text-center">Actions</TableHead>
-          )}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((row, rowIndex) => (
-          <TableRow
-            key={rowIndex}
-            className={onClick ? "cursor-pointer" : ""}
-            onClick={() => onClick?.(row)}
-          >
-            {headers.map((header , key) => (
-              <TableCell key={key} className={header.className}>
-                {header.render
-                  ? header.render(row[key], row)
-                  : String(row[key] ?? "")}
-              </TableCell>
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-xs">
+      <TableBase className={className}>
+        <TableHeader>
+          <TableRow>
+            {headers.map((header) => (
+              <TableHead key={header.id} className={header.className}>
+                {header.label}
+              </TableHead>
             ))}
-            {haveActions && actions.length > 0 && (
-              <TableCell className="text-center">
-                <ActionsMenu actions={actions} row={row} />
-              </TableCell>
+            {showActions && (
+              <TableHead className="w-16 text-center">
+                <span className={cn(!actionsLabel && "sr-only")}>
+                  {actionsLabel}
+                </span>
+              </TableHead>
             )}
           </TableRow>
-        ))}
-      </TableBody>
-    </TableBase>
-  )
+        </TableHeader>
+        <TableBody>
+          {data.map((row, rowIndex) => (
+            <TableRow
+              key={rowIndex}
+              className={cn(onClick && "cursor-pointer")}
+              onClick={() => onClick?.(row)}
+            >
+              {headers.map((header) => (
+                <TableCell key={header.id} className={header.className}>
+                  {header.render
+                    ? header.render(row[header.id], row)
+                    : String(row[header.id] ?? "")}
+                </TableCell>
+              ))}
+              {showActions && (
+                <TableCell className="text-center">
+                  <ActionsMenu actions={actions} row={row} label={actionsLabel} />
+                </TableCell>
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      </TableBase>
+    </div>
+  );
 }
-
 
 export {
   TableBase as TableContainer,
@@ -242,4 +257,4 @@ export {
   TableCell,
   TableCaption,
   Table,
-}
+};

@@ -1,42 +1,71 @@
 import clx from "clsx";
+import { cn } from "@/src/lib/utils";
 
-// Base button styles
+// Base button styles (no background: every variant sets its own colours)
 export const baseButtonStyles = clx(
-  "flex flex-row items-center justify-center gap-1 text-sm px-2 py-2 rounded-[30px] font-medium transition-all duration-300 ease-in-out hover:opacity-80 active:scale-95 tracking-wide disabled:cursor-not-allowed disabled:opacity-50 outline-none cursor-pointer bg-primary"
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium",
+  "transition-colors duration-150 ease-in-out outline-none cursor-pointer select-none",
+  "focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
+  "disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+);
+
+const primaryStyles = clx(
+  "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90"
+);
+const secondaryStyles = clx(
+  "bg-secondary text-secondary-foreground hover:bg-slate-200"
+);
+const destructiveStyles = clx(
+  "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90"
+);
+const borderedStyles = clx(
+  "border border-input bg-card text-foreground shadow-xs hover:bg-accent hover:text-accent-foreground"
 );
 
 // Variant styles
 export const variantStyles = {
-  "btn-primary": clx("bg-darkgreen text-white"),
-  "btn-secondary": clx("bg-gray-90 text-white hover:opacity-60 "),
-  "btn-delete": clx(
-    "bg-[#FFE4DE] text-[#C1342E] hover:bg-[#FFC9BC] hover:text-[#BA241F] transition font-semibold"
+  default: primaryStyles,
+  "btn-primary": primaryStyles,
+  secondary: secondaryStyles,
+  "btn-secondary": secondaryStyles,
+  destructive: destructiveStyles,
+  "btn-delete": destructiveStyles,
+  "btn-cancel": borderedStyles,
+  outline: borderedStyles,
+  ghost: clx("text-foreground hover:bg-accent hover:text-accent-foreground"),
+  success: clx(
+    "bg-success text-success-foreground shadow-xs hover:bg-success/90"
   ),
-  "btn-cancel": clx(
-    "bg-gray-30 text-gray-70 hover:bg-gray-40 border border-solid border-gray-40 font-medium"
-  ),
-  loading: clx("opacity-50 cursor-not-allowed"),
-  success: clx("bg-green-500 text-white"),
-  error: clx("bg-red-600 text-white"),
-  disabled: false,
+  error: destructiveStyles,
+  loading: clx("cursor-wait"),
+  disabled: "",
   idle: "",
-  outline: clx(
-    "border border-input bg-background hover:bg-accent hover:text-accent-foreground"
-  ),
 };
 
-// Get styles based on variant and status
+// Size styles
+export const sizeStyles = {
+  sm: clx("h-8 px-3 text-xs"),
+  md: clx("h-9 px-4 text-sm"),
+  lg: clx("h-10 px-6 text-sm"),
+  icon: clx("size-9 p-0 text-sm"),
+};
+
+export type ButtonVariant = keyof typeof variantStyles;
+export type ButtonSize = keyof typeof sizeStyles;
+
+// Get styles based on variant, size and status
 export const getButtonStyles = (
   className?: string,
-  variant?: keyof typeof variantStyles,
+  variant?: ButtonVariant,
   isLoading?: boolean,
-  disabled?: boolean
+  _disabled?: boolean,
+  size: ButtonSize = "md"
 ) => {
-  return clx(
+  return cn(
     baseButtonStyles,
-    variant && variantStyles[variant],
+    sizeStyles[size],
+    variantStyles[variant ?? "default"],
     isLoading && variantStyles.loading,
-    className,
-    disabled
+    className
   );
 };

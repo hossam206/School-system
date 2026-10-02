@@ -31,12 +31,12 @@ const BreadCrump = ({ List }: BreadCrumpProps) => {
                     {item.Link ? (
                       <BreadcrumbLink
                         href={item.Link}
-                        className="text-gray-60 font-medium"
+                        className="font-medium text-muted-foreground"
                       >
                         {item.label}
                       </BreadcrumbLink>
                     ) : (
-                      <span className="text-gray-80 cursor-default font-medium">
+                      <span className="cursor-default font-medium text-foreground">
                         {item.label}
                       </span>
                     )}

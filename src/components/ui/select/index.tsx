@@ -1,111 +1,211 @@
-  "use client";
-  import * as React from "react";
-  import { Check, ChevronDown, ChevronsUpDown } from "lucide-react";
-  import { cn } from "@/src/lib/utils";
-  import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-  } from "@/src/components/ui/select/command";
-  import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-  } from "@/src/components/ui/select/popover";
-  import Button from "../Button";
+"use client";
 
-  interface GenericSelectProps<T> {
-    items: T[];
-    valueKey?: keyof T;
-    labelKey?: keyof T;
-    displayImg?: keyof T;
-    onSelect?: (value: any, item: T) => void;
-    placeholder?: string;
-    title?: string;
-    defaultValue?: any;
-    className?: string;
-  }
+import * as React from "react";
+import { Check, ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { cn } from "@/src/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/src/components/ui/select/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/components/ui/select/popover";
+import { labelFilter, selectStyles } from "./classNames";
 
-  export function Select<T extends Record<string, any>>({
-    items,
-    valueKey = "value",
-    labelKey = "label",
-    displayImg,
-    onSelect,
-    placeholder = "Select item...",
-    title = "Select item",
-    defaultValue,
-    className,
-  }: GenericSelectProps<T>) {
-    const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState(defaultValue);
+interface SelectProps<T> {
+  items: T[];
+  valueKey?: keyof T;
+  labelKey?: keyof T;
+  /** Custom option label (also used for searching). */
+  getLabel?: (item: T) => string;
+  /** Optional image key rendered before the label. */
+  displayImg?: keyof T;
+  /** Controlled value (`null` / "" for nothing selected). Controlled when not `undefined`. */
+  value?: string | null;
+  /** Initial value for uncontrolled use (ignored when `value` is passed). */
+  defaultValue?: string | null;
+  /** Called with the option's value as a string ("" when the selection is cleared). */
+  onSelect?: (value: string, item: T) => void;
+  isOptionDisabled?: (item: T) => boolean;
+  id?: string;
+  name?: string;
+  label?: string;
+  error?: string;
+  touched?: boolean;
+  mandatory?: boolean;
+  /** When true, choosing the selected option again clears it (default false). */
+  clearable?: boolean;
+  disabled?: boolean;
+  /** Called when the popover closes without a selection (mark the field as touched). */
+  onBlur?: () => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyText?: string;
+  /** Shown when `value` is set but matches no item (defaults to `common.unknown`). */
+  unknownLabel?: string;
+  className?: string;
+}
 
-    const selectedItem = items?.find((item) => item[valueKey] === value);
+const isEmptyValue = (value: unknown) =>
+  value === undefined || value === null || value === "";
 
-    return (
-      <Popover open={open} onOpenChange={setOpen}>
+export function Select<T extends Record<string, any>>({
+  items,
+  valueKey = "value",
+  labelKey = "label",
+  getLabel,
+  displayImg,
+  value,
+  defaultValue = null,
+  onSelect,
+  isOptionDisabled,
+  id,
+  name,
+  label,
+  error,
+  touched,
+  mandatory = false,
+  clearable = false,
+  disabled = false,
+  onBlur,
+  placeholder,
+  searchPlaceholder,
+  emptyText,
+  unknownLabel,
+  className,
+}: SelectProps<T>) {
+  const t = useTranslations("common");
+  const [open, setOpen] = React.useState(false);
+  const [internalValue, setInternalValue] = React.useState<string | null>(
+    defaultValue
+  );
+  const isControlled = value !== undefined;
+  const currentValue = isControlled ? value : internalValue;
+  const hasValue = !isEmptyValue(currentValue);
+  const selectedKey = hasValue ? String(currentValue) : "";
+  const triggerId = id ?? name;
+  const errorId = triggerId ? `${triggerId}-error` : undefined;
+  const hasError = !!error && !!touched;
+  const list = items ?? [];
+
+  const keyOf = (item: T) => String(item[valueKey]);
+  const labelOf = (item: T) =>
+    getLabel ? getLabel(item) : String(item[labelKey] ?? item[valueKey] ?? "");
+
+  const selectedItem = hasValue
+    ? list.find((item) => keyOf(item) === selectedKey)
+    : undefined;
+
+  // Closing without choosing an option counts as a blur
+  const handleOpenChange = (next: boolean) => {
+    if (next && disabled) return;
+    setOpen(next);
+    if (!next) onBlur?.();
+  };
+
+  const handleSelect = (item: T) => {
+    const itemKey = keyOf(item);
+    const alreadySelected = hasValue && itemKey === selectedKey;
+    setOpen(false);
+    if (alreadySelected && !clearable) {
+      onBlur?.();
+      return;
+    }
+    const nextValue = alreadySelected ? "" : itemKey;
+    if (!isControlled) setInternalValue(nextValue);
+    onSelect?.(nextValue, item);
+  };
+
+  const renderImage = (item: T) =>
+    displayImg && item[displayImg] ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={String(item[displayImg])}
+        alt=""
+        className={selectStyles.image}
+      />
+    ) : null;
+
+  return (
+    <div className={selectStyles.wrapper}>
+      {label && (
+        <label htmlFor={triggerId} className={selectStyles.label}>
+          {label}
+          {mandatory && <span className={selectStyles.requiredMark}>*</span>}
+        </label>
+      )}
+
+      <Popover open={open} onOpenChange={handleOpenChange} modal>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
+          <button
+            type="button"
+            id={triggerId}
+            name={name}
+            role="combobox"
             aria-expanded={open}
-            className={cn("w-full justify-between text-sm text-gray-600 px-4", className)}
+            aria-invalid={hasError || undefined}
+            aria-describedby={hasError ? errorId : undefined}
+            disabled={disabled}
+            className={cn(
+              selectStyles.trigger,
+              hasError && selectStyles.triggerError,
+              className
+            )}
           >
             {selectedItem ? (
-              <div className="flex items-center gap-2">
-                {displayImg && selectedItem[displayImg] && (
-                  <img
-                    src={selectedItem[displayImg]}
-                    alt={selectedItem[labelKey]}
-                    className="h-5 w-5 rounded-full object-cover"
-                  />
-                )}
-                {selectedItem[labelKey]}
-              </div>
+              <span className={selectStyles.value}>
+                {renderImage(selectedItem)}
+                <span className="truncate">{labelOf(selectedItem)}</span>
+              </span>
+            ) : hasValue ? (
+              <span className={selectStyles.unknown}>
+                {unknownLabel ?? t("unknown")}
+              </span>
             ) : (
-              placeholder
+              <span className={selectStyles.placeholder}>
+                {placeholder ?? (t.has("select") ? t("select") : "")}
+              </span>
             )}
-            <ChevronDown className=" h-4 w-4 shrink-0 opacity-50 cursor-pointer" />
-          </Button>
+            <ChevronDown className={selectStyles.chevron} aria-hidden />
+          </button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
-          <Command>
-            <CommandInput placeholder={`Search ${title.toLowerCase()}...`} />
-            <CommandList>
-              <CommandEmpty>No {title.toLowerCase()} found.</CommandEmpty>
+        <PopoverContent className={selectStyles.content} align="start">
+          <Command filter={labelFilter} defaultValue={selectedKey || undefined}>
+            <CommandInput placeholder={searchPlaceholder ?? t("search")} />
+            <CommandList className="scrollbar-modern">
+              <CommandEmpty>{emptyText ?? t("noResults")}</CommandEmpty>
               <CommandGroup>
-                {items.map((item) => {
-                  const isSelected = value === item[valueKey];
+                {list.map((item) => {
+                  const itemKey = keyOf(item);
+                  const itemLabel = labelOf(item);
+                  const selected = hasValue && itemKey === selectedKey;
                   return (
                     <CommandItem
-                      key={String(item[valueKey])}
-                      value={String(item[labelKey])} // Command uses value for filtering, usually label is better for search
-                      onSelect={() => {
-                        const newValue = item[valueKey];
-                        setValue(newValue === value ? "" : newValue);
-                        if (onSelect) {
-                          onSelect(newValue === value ? "" : newValue, item);
-                        }
-                        setOpen(false);
-                      }}
+                      key={itemKey}
+                      value={itemKey}
+                      keywords={[itemLabel]}
+                      disabled={isOptionDisabled?.(item) ?? false}
+                      onSelect={() => handleSelect(item)}
+                      className={selectStyles.item}
                     >
                       <Check
                         className={cn(
-                          isSelected ? "opacity-100" : "opacity-0"
+                          selectStyles.check,
+                          selected ? "opacity-100" : "opacity-0"
                         )}
+                        aria-hidden
                       />
-                      <div className="flex items-center gap-2">
-                        {displayImg && item[displayImg] && (
-                          <img
-                            src={item[displayImg]}
-                            alt={item[labelKey]}
-                            className="h-5 w-5 rounded-full object-cover"
-                          />
-                        )}
-                        {item[labelKey]}
-                      </div>
+                      <span className="flex min-w-0 items-center gap-2">
+                        {renderImage(item)}
+                        <span className="truncate">{itemLabel}</span>
+                      </span>
                     </CommandItem>
                   );
                 })}
@@ -114,16 +214,33 @@
           </Command>
         </PopoverContent>
       </Popover>
-    );
-  }
 
+      {hasError && (
+        <p id={errorId} className={selectStyles.errorMsg}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
 
-  // usage
-        // <GenericSelect
-        //   items={users}
-        //   valueKey="id" // send this param if want to select by id instead of value
-        //   labelKey="name" // send this param if want to display by name instead of value
-        //   displayImg="avatar" // send this param if want to display image
-        //   onSelect={(id) => console.log("Selected ID:", id)}
-        //   placeholder="Select User"
-        // />;
+export { MultiSelect } from "./multi-select";
+export type { MultiSelectProps } from "./multi-select";
+export type { SelectProps };
+
+// Formik usage (touched first, then the value, so validation sees the new value):
+// <Select
+//   items={grades}
+//   valueKey="_id"
+//   labelKey="name"
+//   name="grade"
+//   value={values.grade}
+//   onSelect={(id) => {
+//     setFieldTouched("grade", true, false);
+//     setFieldValue("grade", id);
+//   }}
+//   onBlur={() => setFieldTouched("grade", true)}
+//   label="Grade"
+//   error={errors.grade}
+//   touched={touched.grade}
+// />

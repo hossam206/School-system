@@ -1,12 +1,15 @@
+"use client";
+
 import React, { ReactNode, forwardRef, ButtonHTMLAttributes } from "react";
-import { getButtonStyles, variantStyles } from "./classNames";
+import { getButtonStyles, type ButtonSize, type ButtonVariant } from "./classNames";
 
 import { Loader } from "lucide-react";
 import { generalStore } from "@/src/store/generalStore";
 
 interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "prefix"> {
-  variant?: keyof typeof variantStyles;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   loading?: boolean;
   prefix?: ReactNode;
   suffix?: ReactNode;
@@ -21,6 +24,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       type = "button",
       disabled = false,
       variant,
+      size = "md",
       loading = false,
       prefix,
       suffix,
@@ -36,29 +40,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // combine local and global loading state
     const isLoading = loading || isGlobalLoading;
 
-    console.log(loadingKey, "loadingKey");
-    console.log(globalLoadingKey, "globalLoadingKey");
-
     const combinedStyles = getButtonStyles(
       className,
       variant,
       isLoading,
-      disabled
-    );
-
-    const renderLoading = () => (
-      <span className="flex items-center gap-2">
-        <Loader size={18} className="animate-spin" />
-        Loading...
-      </span>
-    );
-
-    const renderContent = () => (
-      <span className="flex items-center gap-2">
-        {prefix}
-        {children}
-        {suffix}
-      </span>
+      disabled,
+      size
     );
 
     return (
@@ -67,10 +54,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={combinedStyles}
         disabled={disabled || isLoading}
         aria-disabled={disabled || isLoading}
+        aria-busy={isLoading || undefined}
         ref={ref}
         {...props}
       >
-        {isLoading ? renderLoading() : renderContent()}
+        {isLoading ? (
+          <Loader className="size-4 animate-spin" aria-hidden />
+        ) : (
+          prefix
+        )}
+        {children}
+        {suffix}
       </button>
     );
   }
@@ -78,3 +72,5 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = "Button";
 export default Button;
+export { Button };
+export type { ButtonProps, ButtonSize, ButtonVariant };
